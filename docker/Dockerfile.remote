@@ -1,0 +1,9 @@
+FROM openjdk:8-alpine
+
+COPY /target/*bootified.jar /app.jar
+
+EXPOSE 8081
+
+ENV JAVA_OPTS=""
+
+CMD java $JAVA_OPTS -jar /app.jar --spring.profiles.active="remote"

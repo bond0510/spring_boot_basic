@@ -1,0 +1,377 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 https://maven.apache.org/xsd/maven-4.0.0.xsd">
+	<modelVersion>4.0.0</modelVersion>
+	<parent>
+		<groupId>org.springframework.boot</groupId>
+		<artifactId>spring-boot-starter-parent</artifactId>
+		<version>2.6.6</version>
+		<relativePath /> <!-- lookup parent from repository -->
+	</parent>
+	<groupId>entercard.msplatform</groupId>
+	<artifactId>test_basic</artifactId>
+	<version>1.0.0-SANPSHOT</version>
+	<name>test_basic</name>
+	<description>Microservice application for test_basic</description>
+
+	<properties>
+		<java.version>1.8</java.version>
+		<jacoco.version>0.8.4</jacoco.version>
+		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+		<project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
+		<flyway.version>7.15.0</flyway.version>
+	</properties>
+
+	<dependencies>
+		<dependency>
+			<groupId>org.springframework.boot</groupId>
+			<artifactId>spring-boot-starter-actuator</artifactId>
+		</dependency>
+		<dependency>
+			<groupId>org.springframework.boot</groupId>
+			<artifactId>spring-boot-starter-aop</artifactId>
+		</dependency>
+		<dependency>
+			<groupId>org.springframework.boot</groupId>
+			<artifactId>spring-boot-starter-web</artifactId>
+		</dependency>
+		<dependency>
+			<groupId>org.projectlombok</groupId>
+			<artifactId>lombok</artifactId>
+			<optional>true</optional>
+		</dependency>
+		<dependency>
+			<groupId>org.springframework.boot</groupId>
+			<artifactId>spring-boot-starter-test</artifactId>
+			<scope>test</scope>
+			<exclusions>
+				<exclusion>
+					<groupId>junit</groupId>
+					<artifactId>junit</artifactId>
+				</exclusion>
+				<exclusion>
+					<groupId>com.vaadin.external.google</groupId>
+					<artifactId>android-json</artifactId>
+				</exclusion>
+			</exclusions>
+		</dependency>
+		<dependency>
+			<groupId>com.google.code.gson</groupId>
+			<artifactId>gson</artifactId>
+			<version>2.8.5</version>
+		</dependency>
+		<dependency>
+			<groupId>org.json</groupId>
+			<artifactId>json</artifactId>
+			<version>20201115</version>
+		</dependency>
+		<dependency>
+			<groupId>commons-codec</groupId>
+			<artifactId>commons-codec</artifactId>
+		</dependency>
+		<dependency>
+			<groupId>com.github.tomakehurst</groupId>
+			<artifactId>wiremock-jre8</artifactId>
+			<version>2.24.0</version>
+			<scope>test</scope>
+		</dependency>
+		<dependency>
+			<groupId>org.modelmapper</groupId>
+			<artifactId>modelmapper</artifactId>
+			<version>2.3.5</version>
+		</dependency>
+		<dependency>
+			<groupId>org.springframework.boot</groupId>
+			<artifactId>spring-boot-starter-validation</artifactId>
+		</dependency>
+		<dependency>
+			<groupId>javassist</groupId>
+			<artifactId>javassist</artifactId>
+			<version>3.12.1.GA</version>
+		</dependency>
+		<dependency>
+			<groupId>org.springframework.boot</groupId>
+			<artifactId>spring-boot-starter-security</artifactId>
+		</dependency>
+		<dependency>
+            <groupId>org.springframework.security</groupId>
+            <artifactId>spring-security-test</artifactId>
+            <scope>test</scope>
+        </dependency>
+		<dependency>
+			<groupId>org.apache.commons</groupId>
+			<artifactId>commons-lang3</artifactId>
+ 		</dependency>
+	</dependencies>
+	<build>
+		<plugins>
+			<plugin>
+				<groupId>org.springframework.boot</groupId>
+				<artifactId>spring-boot-maven-plugin</artifactId>
+				<configuration>
+					<mainClass>ec.msplatform.Application</mainClass>
+					<classifier>bootified</classifier>
+					<finalName>${project.artifactId}</finalName>
+				</configuration>
+				<executions>
+					<execution>
+						<goals>
+							<goal>repackage</goal>
+						</goals>
+					</execution>
+				</executions>
+			</plugin>
+			
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-surefire-plugin</artifactId>
+				<configuration>
+					<forkCount>0</forkCount>
+				</configuration>
+			</plugin>
+
+			<plugin>
+				<groupId>org.jacoco</groupId>
+				<artifactId>jacoco-maven-plugin</artifactId>
+				<version>${jacoco.version}</version>
+				<executions>
+					<execution>
+						<id>prepare-agent</id>
+						<goals>
+							<goal>prepare-agent</goal>
+						</goals>
+					</execution>
+					<execution>
+						<id>report</id>
+						<phase>prepare-package</phase>
+						<goals>
+							<goal>report</goal>
+						</goals>
+					</execution>
+					<execution>
+						<id>post-unit-test</id>
+						<phase>test</phase>
+						<goals>
+							<goal>report</goal>
+						</goals>
+						<configuration>
+							<!-- Sets the path to the file which contains the execution data. -->
+							<dataFile>target/jacoco.exec</dataFile>
+							<!-- Sets the output directory for the code coverage report. -->
+							<outputDirectory>target/jacoco-ut</outputDirectory>
+						</configuration>
+					</execution>
+					<!-- The following configuration allows, using 'mvn clean verify' command,
+						to execute the tests and check the coverage, showing an ERROR if the minimum
+						coverage is not reached. The 'mvn clean test' command won't be affected.
+						It will work as always and won't show ERROR if coverage is not reached -->
+					<execution>
+						<id>jacoco-check</id>
+						<goals>
+							<goal>check</goal>
+						</goals>
+						<configuration>
+							<rules>
+								<rule>
+									<!-- Options for 'element': BUNDLE, CLASS, GROUP, METHOD, PACKAGE,
+										SOURCEFILE More details here: jacoco.org/jacoco/trunk/doc/api/org/jacoco/core/analysis/ICoverageNode.ElementType.html -->
+									<element>BUNDLE</element>
+									<limits>
+										<limit>
+											<counter>LINE</counter>
+											<value>COVEREDRATIO</value>
+											<minimum>0.8</minimum>
+										</limit>
+									</limits>
+								</rule>
+							</rules>
+						</configuration>
+					</execution>
+				</executions>
+				<configuration>
+					<destFile>${sonar.jacoco.reportPath}</destFile>
+					<excludes>
+						<exclude>**/common/**</exclude>
+						<exclude>**/entities/**</exclude>
+						<exclude>**/repositories/**</exclude>
+						<exclude>**/model/**</exclude>
+						<exclude>**/models/**</exclude>
+						<exclude>**/api/**</exclude>
+						<exclude>**/validator/**</exclude>
+            			<exclude>**/logging/**</exclude>
+						<exclude>**/*Application.*</exclude>
+					</excludes>
+				</configuration>
+			</plugin>
+			<plugin>
+				<artifactId>maven-resources-plugin</artifactId>
+				<executions>
+					<execution>
+						<id>copy-dev-resources</id>
+						<!-- here the phase we need to copy truststore -->
+						<phase>validate</phase>
+						<goals>
+							<goal>copy-resources</goal>
+						</goals>
+						<configuration>
+							<outputDirectory>target/devenv</outputDirectory>
+							<resources>
+								<resource>
+									<directory>src/main/resources/certs/devenv</directory>
+									<filtering>false</filtering>
+								</resource>
+							</resources>
+						</configuration>
+					</execution>
+					<execution>
+						<id>copy-tst-resources</id>
+						<!-- here the phase we need to copy truststore -->
+						<phase>validate</phase>
+						<goals>
+							<goal>copy-resources</goal>
+						</goals>
+						<configuration>
+							<outputDirectory>target/tstenv</outputDirectory>
+							<resources>
+								<resource>
+									<directory>src/main/resources/certs/tstenv</directory>
+									<filtering>false</filtering>
+								</resource>
+							</resources>
+						</configuration>
+					</execution>
+					<execution>
+						<id>copy-stg-resources</id>
+						<!-- here the phase we need to copy truststore -->
+						<phase>validate</phase>
+						<goals>
+							<goal>copy-resources</goal>
+						</goals>
+						<configuration>
+							<outputDirectory>target/stgenv</outputDirectory>
+							<resources>
+								<resource>
+									<directory>src/main/resources/certs/stgenv</directory>
+									<filtering>false</filtering>
+								</resource>
+							</resources>
+						</configuration>
+					</execution>
+					<execution>
+						<id>copy-pro-resources</id>
+						<!-- here the phase we need to copy truststore -->
+						<phase>validate</phase>
+						<goals>
+							<goal>copy-resources</goal>
+						</goals>
+						<configuration>
+							<outputDirectory>target/proenv</outputDirectory>
+							<resources>
+								<resource>
+									<directory>src/main/resources/certs/proenv</directory>
+									<filtering>false</filtering>
+								</resource>
+							</resources>
+						</configuration>
+					</execution>
+				</executions>
+			</plugin>
+		</plugins>
+	</build>
+  
+  
+     <!-- flyway integration maven plugin -->
+
+  <profiles>
+    <profile>
+      <id>flyway</id>
+      <build>
+        <plugins>
+
+
+          <!-- Decrypt Database UserName Password -->
+          <plugin>
+            <groupId>org.codehaus.gmaven</groupId>
+            <artifactId>groovy-maven-plugin</artifactId>
+            <executions>
+              <execution>
+                <id>decrypt-passwords</id>
+                <phase>initialize</phase>
+                <goals>
+                  <goal>execute</goal>
+                </goals>
+                <configuration>
+                  <source>
+                    if (properties["spring.datasource.username"] != null){
+                    try {
+                    def userName=properties["spring.datasource.username"].toString()
+                    byte[] userNameDecoded = userName.decodeBase64()
+                    project.properties["jdbc.user"]=new String(userNameDecoded)
+
+                    } catch(Exception e) {
+                    println("Exception while decrypting spring.datasource.username property : ${e}")
+                    }
+                    }
+                    if (properties["spring.datasource.password"] != null){
+                    try {
+                    def password=properties["spring.datasource.password"].toString()
+                    byte[] passwordDecoded = password.decodeBase64()
+                    project.properties["jdbc.password"]=new String(passwordDecoded)
+
+                    } catch(Exception e) {
+                    println("Exception while decrypting spring.datasource.password property : ${e}")
+                    }
+                    }
+                  </source>
+                </configuration>
+              </execution>
+            </executions>
+          </plugin>
+
+
+
+
+
+          <plugin>
+            <groupId>org.flywaydb</groupId>
+            <artifactId>flyway-maven-plugin</artifactId>
+            <version>${flyway.version}</version>
+            <configuration>
+              <driver>com.mysql.cj.jdbc.Driver</driver>
+              <url>${datasource.url}</url>
+              <user>${jdbc.user}</user>
+              <password>${jdbc.password}</password>
+              <schemas>
+               <schema>${application_database_name}</schema>
+              </schemas>
+              <locations>
+                <location>db/migration/releases/0.0.1</location>
+              </locations>
+              <encoding>ISO-8859-1</encoding>
+              <baselineOnMigrate>true</baselineOnMigrate>
+              <baselineMigrationPrefix>B</baselineMigrationPrefix>
+              <outOfOrder>true</outOfOrder>
+             <table>test_basic_history</table>
+            </configuration>
+            <executions>
+              <execution>
+                <id>flyway database migration</id>
+                <phase>compile</phase>
+                <goals>
+                  <goal>repair</goal>
+                  <goal>migrate</goal>
+                  <goal>info</goal>
+                </goals>
+              </execution>
+            </executions>
+          </plugin>
+        </plugins>
+      </build>
+    </profile>
+
+  </profiles>
+  
+  
+  
+</project>
