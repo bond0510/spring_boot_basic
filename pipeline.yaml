@@ -5,3 +5,7 @@ kubernateNamespace : 'test'
 secerts:
   properties1: 'properties_values_1'
   properties2: 'properties_values_2'
+ 
+properties:
+  LOGGING_LEVEL: "INFO"
+  
